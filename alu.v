@@ -1,25 +1,20 @@
-`timescale 1ns/1ps
-module tb_alu();
-    reg [7:0] A, B;
-    reg [2:0] Sel;
-    wire [7:0] Result;
-    wire CarryOut, Zero;
-    alu uut (.A(A), .B(B), .Sel(Sel), .Result(Result), .CarryOut(CarryOut), .Zero(Zero));
-    initial begin
-    $dumpfile("dump.vcd");
-    $dumpvars(0, tb_alu);
-        A = 8'd15; B = 8'd10; Sel = 3'b000; #10;
-        $display("ADD: A=%d B=%d Result=%d Carry=%b Zero=%b", A, B, Result, CarryOut, Zero);
-        A = 8'd20; B = 8'd5; Sel = 3'b001; #10;
-        $display("SUB: A=%d B=%d Result=%d Carry=%b Zero=%b", A, B, Result, CarryOut, Zero);
-        A = 8'b11001100; B = 8'b10101010; Sel = 3'b010; #10;
-        $display("AND: Result=%b Carry=%b Zero=%b", Result, CarryOut, Zero);
-        A = 8'b11001100; B = 8'b10101010; Sel = 3'b011; #10;
-        $display("OR: Result=%b Carry=%b Zero=%b", Result, CarryOut, Zero);
-        A = 8'b11001100; B = 8'b10101010; Sel = 3'b100; #10;
-        $display("XOR: Result=%b Carry=%b Zero=%b", Result, CarryOut, Zero);
-        A = 8'd0; B = 8'd0; Sel = 3'b000; #10;
-        $display("ZERO CHECK: Result=%d Zero=%b", Result, Zero);
-        $finish;
-    end
+module alu(
+    input [7:0] A,
+    input [7:0] B,
+    input [2:0] Sel,
+    output reg [7:0] Result,
+    output reg CarryOut,
+    output Zero
+);
+always @(*) begin
+    case (Sel)
+        3'b000: {CarryOut, Result} = A + B;
+        3'b001: {CarryOut, Result} = A - B;
+        3'b010: {CarryOut, Result} = {1'b0, A & B};
+        3'b011: {CarryOut, Result} = {1'b0, A | B};
+        3'b100: {CarryOut, Result} = {1'b0, A ^ B};
+        default: {CarryOut, Result} = 9'b0;
+    endcase
+end
+assign Zero = (Result == 8'b0) ? 1'b1 : 1'b0;
 endmodule
