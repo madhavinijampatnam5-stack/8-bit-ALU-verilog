@@ -23,3 +23,6 @@
 
 ## Author
 Nijampatnam Madhavi
+## Output
+
+![Output](output.png)
