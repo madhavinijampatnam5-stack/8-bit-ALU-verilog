@@ -22,4 +22,4 @@
 4. Run and check waveform
 
 ## Author
-Madhavi
+Nijampatnam Madhavi
